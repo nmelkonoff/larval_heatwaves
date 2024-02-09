@@ -5,6 +5,7 @@
 library(car)
 library(ggplot2)
 library(tidyverse)
+library(dplyr)
 
 #is fwl dependent on hostplant spp and/or treatment?
 model <- aov(r2_adult$fwl ~ r2_adult$hostplant * r2_adult$treatment, 
@@ -48,3 +49,116 @@ model3 <- aov(r2_adult$pupal_days ~ r2_adult$hostplant * r2_adult$treatment,
               data = r2_adult)
 summary(model3)
 ##no significant relationships
+
+#calculate meas and sds
+
+#Function to calculate the mean and the standard deviation for each group
+
+#data: a data frame
+#varname: the name of a column containing the variable to be summarized
+#groupnames: vector of column names to be used as grouping variables
+
+#fwl
+data_summary_fwl <- function(data, varname = "fwl", groupnames = c("hostplant", "treatment")){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+  data_sum <- rename(data_sum, c("mean" = varname))
+  return(data_sum)
+}
+
+
+df_fwl <- data_summary_fwl(data, varname ="fwl", 
+                              groupnames = c("hostplant", "treatment"))
+
+df_fwl$hostplant=as.factor(df_fwl$hostplant)
+head(df_fwl)
+
+p <- ggplot(df_fwl, aes(x=hostplant, y=fwl, fill=treatment)) + 
+  geom_bar(stat="identity", position=position_dodge()) +
+  geom_errorbar(aes(ymin=fwl-sd, ymax=fwl+sd), width=.2,
+                position=position_dodge(.9))
+
+p + scale_fill_manual(values = c("darkblue", "darkgreen", "purple", "red", "yellow"))
+
+#pupal_days
+data_summary_pupal_days <- function(data, varname = "pupal_days", groupnames = c("hostplant", "treatment")){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+  data_sum <- rename(data_sum, c("mean" = varname))
+  return(data_sum)
+}
+
+
+df_pupal_days <- data_summary_pupal_days(data, varname ="pupal_days", 
+                       groupnames = c("hostplant", "treatment"))
+
+#pupal_mass
+data_summary_pupal_mass <- function(data, varname = "pupal_mass", groupnames = c("hostplant", "treatment")){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+  data_sum <- rename(data_sum, c("mean" = varname))
+  return(data_sum)
+}
+
+
+df_pupal_mass <- data_summary(data, varname ="pupal_mass", 
+                       groupnames = c("hostplant", "treatment"))
+
+#day10_mass
+data_summary_day10_mass <- function(data, varname = "day10_mass", groupnames = c("hostplant", "treatment")){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+  data_sum <- rename(data_sum, c("mean" = varname))
+  return(data_sum)
+}
+
+
+df_day10_mass <- data_summary_day10_mass(data, varname ="day10_mass", 
+                       groupnames = c("hostplant", "treatment"))
+
+#larval_days
+data_summary_larval_days <- function(data, varname = "larval_days", groupnames = c("hostplant", "treatment")){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+  data_sum <- rename(data_sum, c("mean" = varname))
+  return(data_sum)
+}
+
+
+df_larval_days <- data_summary_larval_days(data, varname ="larval_days", 
+                       groupnames = c("hostplant", "treatment"))
+
+
+#more box plots
+ggplot(data) +
+  aes(x = hostplant, y = fwl) +
+  geom_bar(stat = "identity")
+
+
+##find all means and sds
+group_by(data, )
