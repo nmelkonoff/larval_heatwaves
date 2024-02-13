@@ -78,6 +78,8 @@ df_fwl <- data_summary_fwl(data, varname ="fwl",
 df_fwl$hostplant=as.factor(df_fwl$hostplant)
 head(df_fwl)
 
+#plot fwl x hostplant x treatment
+
 p <- ggplot(df_fwl, aes(x=hostplant, y=fwl, fill=treatment)) + 
   geom_bar(stat="identity", position=position_dodge()) +
   geom_errorbar(aes(ymin=fwl-sd, ymax=fwl+sd), width=.2,
@@ -102,6 +104,16 @@ data_summary_pupal_days <- function(data, varname = "pupal_days", groupnames = c
 df_pupal_days <- data_summary_pupal_days(data, varname ="pupal_days", 
                        groupnames = c("hostplant", "treatment"))
 
+#plot pupal days x hostplant x treatment
+
+p_pupal_days <- ggplot(df_pupal_days, aes(x=hostplant, y=pupal_days, fill=treatment)) + 
+  geom_bar(stat="identity", position=position_dodge()) +
+  geom_errorbar(aes(ymin=pupal_days-sd, ymax=pupal_days+sd), width=.2,
+                position=position_dodge(.9))
+
+p_pupal_days + scale_fill_manual(values = c("darkblue", "darkgreen", "purple", "red", "yellow"))
+
+
 #pupal_mass
 data_summary_pupal_mass <- function(data, varname = "pupal_mass", groupnames = c("hostplant", "treatment")){
   require(plyr)
@@ -118,6 +130,15 @@ data_summary_pupal_mass <- function(data, varname = "pupal_mass", groupnames = c
 
 df_pupal_mass <- data_summary(data, varname ="pupal_mass", 
                        groupnames = c("hostplant", "treatment"))
+
+#plot pupal mass x hostplant x treatment
+p_pupal_mass <- ggplot(df_pupal_mass, aes(x=hostplant, y=pupal_mass, fill=treatment)) + 
+  geom_bar(stat="identity", position=position_dodge()) +
+  geom_errorbar(aes(ymin=pupal_mass-sd, ymax=pupal_mass+sd), width=.2,
+                position=position_dodge(.9))
+
+p_pupal_mass + scale_fill_manual(values = c("darkblue", "darkgreen", "purple", "red", "yellow"))
+
 
 #day10_mass
 data_summary_day10_mass <- function(data, varname = "day10_mass", groupnames = c("hostplant", "treatment")){
@@ -136,6 +157,15 @@ data_summary_day10_mass <- function(data, varname = "day10_mass", groupnames = c
 df_day10_mass <- data_summary_day10_mass(data, varname ="day10_mass", 
                        groupnames = c("hostplant", "treatment"))
 
+#plot day10 mass x hostplant x treatment
+p_day10_mass <- ggplot(df_day10_mass, aes(x=hostplant, y=day10_mass, fill=treatment)) + 
+  geom_bar(stat="identity", position=position_dodge()) +
+  geom_errorbar(aes(ymin=day10_mass-sd, ymax=day10_mass+sd), width=.2,
+                position=position_dodge(.9))
+
+p_day10_mass + scale_fill_manual(values = c("darkblue", "darkgreen", "purple", "red", "yellow"))
+
+
 #larval_days
 data_summary_larval_days <- function(data, varname = "larval_days", groupnames = c("hostplant", "treatment")){
   require(plyr)
@@ -153,12 +183,20 @@ data_summary_larval_days <- function(data, varname = "larval_days", groupnames =
 df_larval_days <- data_summary_larval_days(data, varname ="larval_days", 
                        groupnames = c("hostplant", "treatment"))
 
+#plot larval days x hostplant x treatment
+p_larval_days <- ggplot(df_larval_days, aes(x=hostplant, y=larval_days, fill=treatment)) + 
+  geom_bar(stat="identity", position=position_dodge()) +
+  geom_errorbar(aes(ymin=larval_days-sd, ymax=larval_days+sd), width=.2,
+                position=position_dodge(.9))
 
-#more box plots
-ggplot(data) +
-  aes(x = hostplant, y = fwl) +
-  geom_bar(stat = "identity")
+p_larval_days + scale_fill_manual(values = c("darkblue", "darkgreen", "purple", "red", "yellow"))
 
-
-##find all means and sds
-group_by(data, )
+# 
+# #more box plots
+# ggplot(data) +
+#   aes(x = hostplant, y = fwl) +
+#   geom_bar(stat = "identity")
+# 
+# 
+# ##find all means and sds
+# group_by(data, )
