@@ -20,6 +20,7 @@ qqPlot(model$residuals, id = FALSE)
 
 #boxplot
 data <- r2_adult
+
 ggplot(data) +
   aes(x = data$hostplant, y = data$fwl, fill = data$treatment) +
   geom_boxplot()
