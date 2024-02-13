@@ -191,6 +191,29 @@ p_larval_days <- ggplot(df_larval_days, aes(x=hostplant, y=larval_days, fill=tre
 
 p_larval_days + scale_fill_manual(values = c("darkblue", "darkgreen", "purple", "red", "yellow"))
 
+
+#re-organizing ANOVAs
+
+#is fwl dependent on hostplant spp and/or treatment?
+model <- aov(r2_adult$fwl ~ r2_adult$hostplant * r2_adult$treatment, 
+             data = r2_adult)
+####>>
+
+
+#one 2-way ANOVA where there are 4 treatments
+model <- aov(r2_adult$fwl ~ r2_adult$hostplant * r2_adult$treatment, 
+             data = r2_adult)
+
+#three one-way ANOVAs where there are 4 treatments
+model <- aov(r2_adult$fwl ~ r2_adult$treatment, data = r2_adult)
+
+#three two-way ANOVAs where there are 2 treatments (plant heat and cat heat)
+
+#one 3-way ANOVA with everything
+model <- aov(r2_adult$fwl ~ cat_heat ~ plant_heat ~ hostplant)
+
+
+
 # 
 # #more box plots
 # ggplot(data) +
