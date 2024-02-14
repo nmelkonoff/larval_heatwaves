@@ -12,28 +12,28 @@ model <- aov(r2_adult$fwl ~ r2_adult$hostplant * r2_adult$treatment,
              data = r2_adult)
 
 summary(model)
+# 
+# #tests for normality
+# plot(model, which = 2)
+# 
+# qqPlot(model$residuals, id = FALSE)
 
-#tests for normality
-plot(model, which = 2)
-
-qqPlot(model$residuals, id = FALSE)
-
-#boxplot
-data <- r2_adult
-
-ggplot(data) +
-  aes(x = data$hostplant, y = data$fwl, fill = data$treatment) +
-  geom_boxplot()
-
-data %>%
-  filter(!is.na(data$treatment)) %>%
-  ggplot() +
-  aes(x = data$hostplant, y = data$fwl, fill = data$treatment) +
-  geom_boxplot()
-
-ggplot(data) +
-  aes(x = data$treatment, y = data$fwl, fill = data$hostplant) +
-  geom_boxplot()
+# #boxplot
+# data <- r2_adult
+# 
+# ggplot(data) +
+#   aes(x = data$hostplant, y = data$fwl, fill = data$treatment) +
+#   geom_boxplot()
+# 
+# data %>%
+#   filter(!is.na(data$treatment)) %>%
+#   ggplot() +
+#   aes(x = data$hostplant, y = data$fwl, fill = data$treatment) +
+#   geom_boxplot()
+# 
+# ggplot(data) +
+#   aes(x = data$treatment, y = data$fwl, fill = data$hostplant) +
+#   geom_boxplot()
 
 #is larval days dependent on hostplant spp and/or treatment?
 model2 <- aov(r2_adult$larval_days ~ r2_adult$hostplant * r2_adult$treatment, 
@@ -51,7 +51,7 @@ model3 <- aov(r2_adult$pupal_days ~ r2_adult$hostplant * r2_adult$treatment,
 summary(model3)
 ##no significant relationships
 
-#calculate meas and sds
+#calculate means and sds
 
 #Function to calculate the mean and the standard deviation for each group
 
@@ -76,8 +76,8 @@ data_summary_fwl <- function(data, varname = "fwl", groupnames = c("hostplant", 
 df_fwl <- data_summary_fwl(data, varname ="fwl", 
                               groupnames = c("hostplant", "treatment"))
 
-df_fwl$hostplant=as.factor(df_fwl$hostplant)
-head(df_fwl)
+# df_fwl$hostplant=as.factor(df_fwl$hostplant)
+# head(df_fwl)
 
 #plot fwl x hostplant x treatment
 
@@ -86,7 +86,7 @@ p <- ggplot(df_fwl, aes(x=hostplant, y=fwl, fill=treatment)) +
   geom_errorbar(aes(ymin=fwl-sd, ymax=fwl+sd), width=.2,
                 position=position_dodge(.9))
 
-p + scale_fill_manual(values = c("darkblue", "darkgreen", "purple", "red", "yellow"))
+p + scale_fill_manual(values = c("darkblue", "darkgreen", "red", "yellow"))
 
 #pupal_days
 data_summary_pupal_days <- function(data, varname = "pupal_days", groupnames = c("hostplant", "treatment")){
@@ -202,41 +202,41 @@ model <- aov(r2_adult$fwl ~ r2_adult$hostplant * r2_adult$treatment,
 #pull out hostplant data by species
 alin_data <- r2_adult[which(r2_adult$hostplant == "alin"), names(r2_adult)
                       %in% c("larval_days", "day10_mass", "pupal_mass", "pupal_days", 
-                             "fwl", "treatment", "plant_heat", "cat_heat")]
+                             "fwl", "treatment", "plant_heat", "cat_heat", "sex")]
 
 aang_data <- r2_adult[which(r2_adult$hostplant == "aang"), names(r2_adult)
                       %in% c("larval_days", "day10_mass", "pupal_mass", "pupal_days", 
-                             "fwl", "treatment", "plant_heat", "cat_heat")]
+                             "fwl", "treatment", "plant_heat", "cat_heat", "sex")]
 
 asubu_data <- r2_adult[which(r2_adult$hostplant == "asubu"), names(r2_adult)
                        %in% c("larval_days", "day10_mass", "pupal_mass", "pupal_days", 
-                              "fwl", "treatment", "plant_heat", "cat_heat")]
+                              "fwl", "treatment", "plant_heat", "cat_heat", "sex")]
 
 ####ANOVAS for fwl
 #one 2-way ANOVA where there are 4 treatments
-model1_fwl <- aov(r2_adult$fwl ~ r2_adult$hostplant * r2_adult$treatment, 
+model1_fwl <- aov(r2_adult$fwl ~ r2_adult$hostplant * r2_adult$treatment + r2_adult$sex, 
              data = r2_adult)
 
 summary(model1_fwl)
 
 #three one-way ANOVAs where there are 4 treatments
-model_alin_fwl <- aov(alin_data$fwl ~ alin_data$treatment, data = alin_data)
-model_aang_fwl <- aov(aang_data$fwl ~ aang_data$treatment, data = aang_data)
-model_asubu_fwl <- aov(asubu_data$fwl ~ asubu_data$treatment, data = asubu_data)
+model_alin_fwl <- aov(alin_data$fwl ~ alin_data$treatment + alin_data$sex, data = alin_data)
+model_aang_fwl <- aov(aang_data$fwl ~ aang_data$treatment + aang_data$sex, data = aang_data)
+model_asubu_fwl <- aov(asubu_data$fwl ~ asubu_data$treatment + asubu_data$sex, data = asubu_data)
 
 summary(model_alin_fwl)
 summary(model_aang_fwl)
 summary(model_asubu_fwl)
 
 #three two-way ANOVAs where there are 2 treatments (plant heat and cat heat)
-model_alin_2way_fwl <- aov(alin_data$fwl ~ alin_data$plant_heat * alin_data$cat_heat,
-                           data = alin_data)
+model_alin_2way_fwl <- aov(alin_data$fwl ~ alin_data$plant_heat * alin_data$cat_heat +
+                             alin_data$sex, data = alin_data)
 
-model_aang_2way_fwl <- aov(aang_data$fwl ~ aang_data$plant_heat * aang_data$cat_heat,
-                           data = aang_data)
+model_aang_2way_fwl <- aov(aang_data$fwl ~ aang_data$plant_heat * aang_data$cat_heat +
+                             aang_data$sex, data = aang_data)
 
-model_asubu_2way_fwl <- aov(asubu_data$fwl ~ asubu_data$plant_heat * asubu_data$cat_heat,
-                            data = asubu_data)
+model_asubu_2way_fwl <- aov(asubu_data$fwl ~ asubu_data$plant_heat * asubu_data$cat_heat +
+                              asubu_data$sex, data = asubu_data)
 
 summary(model_alin_2way_fwl)
 summary(model_aang_2way_fwl)
@@ -244,9 +244,156 @@ summary(model_asubu_2way_fwl)
 
 #one 3-way ANOVA with everything
 model_3way_everything_fwl <- aov(r2_adult$fwl ~ r2_adult$cat_heat * r2_adult$plant_heat *
-                                   r2_adult$hostplant, data = r2_adult)
+                                   r2_adult$hostplant + r2_adult$sex, data = r2_adult)
 
 summary(model_3way_everything_fwl)
+
+
+####ANOVAS for pupal days
+#one 2-way ANOVA where there are 4 treatments
+model1_pd <- aov(r2_adult$pupal_days ~ r2_adult$hostplant * r2_adult$treatment + r2_adult$sex, 
+                  data = r2_adult)
+
+summary(model1_pd)
+
+#three one-way ANOVAs where there are 4 treatments
+model_alin_pd <- aov(alin_data$pupal_days ~ alin_data$treatment + alin_data$sex, data = alin_data)
+model_aang_pd <- aov(aang_data$pupal_days ~ aang_data$treatment + aang_data$sex, data = aang_data)
+model_asubu_pd <- aov(asubu_data$pupal_days ~ asubu_data$treatment + asubu_data$sex, data = asubu_data)
+
+summary(model_alin_pd)
+summary(model_aang_pd)
+summary(model_asubu_pd)
+
+#three two-way ANOVAs where there are 2 treatments (plant heat and cat heat)
+model_alin_2way_pd <- aov(alin_data$pupal_days ~ alin_data$plant_heat * alin_data$cat_heat +
+                             alin_data$sex, data = alin_data)
+
+model_aang_2way_pd <- aov(aang_data$pupal_days ~ aang_data$plant_heat * aang_data$cat_heat +
+                             aang_data$sex, data = aang_data)
+
+model_asubu_2way_pd <- aov(asubu_data$pupal_days ~ asubu_data$plant_heat * asubu_data$cat_heat +
+                              asubu_data$sex, data = asubu_data)
+
+summary(model_alin_2way_pd)
+summary(model_aang_2way_pd)
+summary(model_asubu_2way_pd)
+
+#one 3-way ANOVA with everything
+model_3way_everything_pd <- aov(r2_adult$pupal_days ~ r2_adult$cat_heat * r2_adult$plant_heat *
+                                   r2_adult$hostplant + r2_adult$sex, data = r2_adult)
+
+summary(model_3way_everything_pd)
+
+
+####ANOVAS for pupal mass
+#one 2-way ANOVA where there are 4 treatments
+model1_pm <- aov(r2_adult$pupal_mass ~ r2_adult$hostplant * r2_adult$treatment + r2_adult$sex, 
+                 data = r2_adult)
+
+summary(model1_pm)
+
+#three one-way ANOVAs where there are 4 treatments
+model_alin_pm <- aov(alin_data$pupal_mass ~ alin_data$treatment + alin_data$sex, data = alin_data)
+model_aang_pm <- aov(aang_data$pupal_mass ~ aang_data$treatment + aang_data$sex, data = aang_data)
+model_asubu_pm <- aov(asubu_data$pupal_mass ~ asubu_data$treatment + asubu_data$sex, data = asubu_data)
+
+summary(model_alin_pm)
+summary(model_aang_pm)
+summary(model_asubu_pm)
+
+#three two-way ANOVAs where there are 2 treatments (plant heat and cat heat)
+model_alin_2way_pm <- aov(alin_data$pupal_mass ~ alin_data$plant_heat * alin_data$cat_heat +
+                            alin_data$sex, data = alin_data)
+
+model_aang_2way_pm <- aov(aang_data$pupal_mass ~ aang_data$plant_heat * aang_data$cat_heat +
+                            aang_data$sex, data = aang_data)
+
+model_asubu_2way_pm <- aov(asubu_data$pupal_mass ~ asubu_data$plant_heat * asubu_data$cat_heat +
+                             asubu_data$sex, data = asubu_data)
+
+summary(model_alin_2way_pm)
+summary(model_aang_2way_pm)
+summary(model_asubu_2way_pm)
+
+#one 3-way ANOVA with everything
+model_3way_everything_pm <- aov(r2_adult$pupal_mass ~ r2_adult$cat_heat * r2_adult$plant_heat *
+                                  r2_adult$hostplant + r2_adult$sex, data = r2_adult)
+
+summary(model_3way_everything_pm)
+
+####ANOVAS for day 10 mass
+#one 2-way ANOVA where there are 4 treatments
+model1_day10m <- aov(r2_adult$day10_mass ~ r2_adult$hostplant * r2_adult$treatment + r2_adult$sex, 
+                 data = r2_adult)
+
+summary(model1_day10m)
+
+#three one-way ANOVAs where there are 4 treatments
+model_alin_day10m <- aov(alin_data$day10_mass ~ alin_data$treatment + alin_data$sex, data = alin_data)
+model_aang_day10m <- aov(aang_data$day10_mass ~ aang_data$treatment + aang_data$sex, data = aang_data)
+model_asubu_day10m <- aov(asubu_data$day10_mass ~ asubu_data$treatment + asubu_data$sex, data = asubu_data)
+
+summary(model_alin_day10m)
+summary(model_aang_day10m)
+summary(model_asubu_day10m)
+
+#three two-way ANOVAs where there are 2 treatments (plant heat and cat heat)
+model_alin_2way_day10m <- aov(alin_data$day10_mass ~ alin_data$plant_heat * alin_data$cat_heat +
+                            alin_data$sex, data = alin_data)
+
+model_aang_2way_day10m <- aov(aang_data$day10_mass ~ aang_data$plant_heat * aang_data$cat_heat +
+                            aang_data$sex, data = aang_data)
+
+model_asubu_2way_day10m <- aov(asubu_data$day10_mass ~ asubu_data$plant_heat * asubu_data$cat_heat +
+                             asubu_data$sex, data = asubu_data)
+
+summary(model_alin_2way_day10m)
+summary(model_aang_2way_day10m)
+summary(model_asubu_2way_day10m)
+
+#one 3-way ANOVA with everything
+model_3way_everything_day10m <- aov(r2_adult$day10_mass ~ r2_adult$cat_heat * r2_adult$plant_heat *
+                                  r2_adult$hostplant + r2_adult$sex, data = r2_adult)
+
+summary(model_3way_everything_day10m)
+
+####ANOVAS for larval days
+#one 2-way ANOVA where there are 4 treatments
+model1_ld <- aov(r2_adult$larval_days ~ r2_adult$hostplant * r2_adult$treatment + r2_adult$sex, 
+                     data = r2_adult)
+
+summary(model1_ld)
+
+#three one-way ANOVAs where there are 4 treatments
+model_alin_ld <- aov(alin_data$larval_days ~ alin_data$treatment + alin_data$sex, data = alin_data)
+model_aang_ld <- aov(aang_data$larval_days ~ aang_data$treatment + aang_data$sex, data = aang_data)
+model_asubu_ld <- aov(asubu_data$larval_days ~ asubu_data$treatment + asubu_data$sex, data = asubu_data)
+
+summary(model_alin_ld)
+summary(model_aang_ld)
+summary(model_asubu_ld)
+
+#three two-way ANOVAs where there are 2 treatments (plant heat and cat heat)
+model_alin_2way_ld <- aov(alin_data$larval_days ~ alin_data$plant_heat * alin_data$cat_heat +
+                                alin_data$sex, data = alin_data)
+
+model_aang_2way_ld <- aov(aang_data$larval_days ~ aang_data$plant_heat * aang_data$cat_heat +
+                                aang_data$sex, data = aang_data)
+
+model_asubu_2way_ld <- aov(asubu_data$larval_days ~ asubu_data$plant_heat * asubu_data$cat_heat +
+                                 asubu_data$sex, data = asubu_data)
+
+summary(model_alin_2way_ld)
+summary(model_aang_2way_ld)
+summary(model_asubu_2way_ld)
+
+#one 3-way ANOVA with everything
+model_3way_everything_ld <- aov(r2_adult$larval_days ~ r2_adult$cat_heat * r2_adult$plant_heat *
+                                      r2_adult$hostplant + r2_adult$sex, data = r2_adult)
+
+summary(model_3way_everything_ld)
+
 
 # 
 # #more box plots
